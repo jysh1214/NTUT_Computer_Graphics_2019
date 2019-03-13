@@ -252,9 +252,9 @@ public:
 
     void move(float x, float y, float z)
     {
-        _center.x += x;
-        _center.y += y;
-        _center.z += z;
+        // _center.x += x;
+        // _center.y += y;
+        // _center.z += z;
         
         _verticeA.x += x;
         _verticeA.y += y;
@@ -295,7 +295,7 @@ public:
     {
         if (anglex != 0.0f)
         {
-        	// 單獨對 X 軸旋轉
+            // 單獨對 X 軸旋轉
             float rx[3][3] = {{1, 0, 0}, 
             {0, float(cos(anglex)), float(sin(anglex))}, 
             {0, -float(sin(anglex)), float(cos(anglex))}};
@@ -314,7 +314,7 @@ public:
         if (angley != 0.0f)
         {
 
-        	// 單獨對 Y 軸旋轉
+            // 單獨對 Y 軸旋轉
             float ry[3][3] = {{float(cos(angley)), 0, -float(sin(angley))}, 
             {0, 1, 0}, 
             {float(sin(angley)), 0, float(cos(angley))}};
@@ -324,15 +324,15 @@ public:
                 for (int i=0; i<=2; i++)
                 {
                     _answerMatrix[j][i] = (ry[i][0] * _verticeMatrix[j][0]) + 
-                                   (ry[i][1] * _verticeMatrix[j][1]) + 
-                                   (ry[i][2] * _verticeMatrix[j][2]);
+                                          (ry[i][1] * _verticeMatrix[j][1]) + 
+                                          (ry[i][2] * _verticeMatrix[j][2]);
                 }
             }  
         }
 
         if (anglez != 0.0f)
         {
-        	// 單獨對 Z 軸旋轉
+            // 單獨對 Z 軸旋轉
             float rz[3][3] = {{float(cos(anglez)), float(sin(anglez)), 0}, 
             {-float(sin(anglez)), float(cos(anglez)), 0}, 
             {0, 0, 1}};
@@ -342,8 +342,8 @@ public:
                 for (int i=0; i<=2; i++)
                 {
                     _answerMatrix[j][i] = (rz[i][0] * _verticeMatrix[j][0]) + 
-                                   (rz[i][1] * _verticeMatrix[j][1]) + 
-                                   (rz[i][2] * _verticeMatrix[j][2]);
+                                          (rz[i][1] * _verticeMatrix[j][1]) + 
+                                          (rz[i][2] * _verticeMatrix[j][2]);
                 }
             }  
         }
@@ -354,7 +354,7 @@ public:
 
     void scale(float sizex, float sizey, float sizez)
     {
-        float scaleMatrix[3][3] = {{sizex, 0, 0}, {0, sizey, 0}, {0, 0, sizez}};
+        float scaleMatrix[3][3] = {{sizex, 0.0f, 0.0f}, {0.0f, sizey, 0.0f}, {0.0f, 0.0f, sizez}};
 
         for (int j=0; j<=7; j++)
         {
@@ -380,7 +380,7 @@ private:
 
     void updateVerticeMatrix()
     {
-    	_verticeMatrix[0][0] = _verticeA.x; _verticeMatrix[0][1] = _verticeA.y; _verticeMatrix[0][2] = _verticeA.z; // A
+        _verticeMatrix[0][0] = _verticeA.x; _verticeMatrix[0][1] = _verticeA.y; _verticeMatrix[0][2] = _verticeA.z; // A
         _verticeMatrix[1][0] = _verticeB.x; _verticeMatrix[1][1] = _verticeB.y; _verticeMatrix[1][2] = _verticeB.z; // B
         _verticeMatrix[2][0] = _verticeC.x; _verticeMatrix[2][1] = _verticeC.y; _verticeMatrix[2][2] = _verticeC.z; // C
         _verticeMatrix[3][0] = _verticeD.x; _verticeMatrix[3][1] = _verticeD.y; _verticeMatrix[3][2] = _verticeD.z; // D
@@ -392,7 +392,7 @@ private:
 
     void assignAnswerMatrix()
     {
-    	_verticeA.x = _answerMatrix[0][0]; _verticeA.y = _answerMatrix[0][1]; _verticeA.z = _answerMatrix[0][2]; // A
+        _verticeA.x = _answerMatrix[0][0]; _verticeA.y = _answerMatrix[0][1]; _verticeA.z = _answerMatrix[0][2]; // A
         _verticeB.x = _answerMatrix[1][0]; _verticeB.y = _answerMatrix[1][1]; _verticeB.z = _answerMatrix[1][2]; // B
         _verticeC.x = _answerMatrix[2][0]; _verticeC.y = _answerMatrix[2][1]; _verticeC.z = _answerMatrix[2][2]; // C
         _verticeD.x = _answerMatrix[3][0]; _verticeD.y = _answerMatrix[3][1]; _verticeD.z = _answerMatrix[3][2]; // D
