@@ -305,290 +305,64 @@ public:
         {-float(sin(anglez)), float(cos(anglez)), 0}, 
         {0, 0, 1}};
 
-        float newPoint[3];
+        float verticeMatrix[8][3]; float answer[8][3];
 
-        if (anglex != 0)
+        verticeMatrix[0][0] = _verticeA.x; verticeMatrix[0][1] = _verticeA.y; verticeMatrix[0][2] = _verticeA.z; // A
+        verticeMatrix[1][0] = _verticeB.x; verticeMatrix[1][1] = _verticeB.y; verticeMatrix[1][2] = _verticeB.z; // B
+        verticeMatrix[2][0] = _verticeC.x; verticeMatrix[2][1] = _verticeC.y; verticeMatrix[2][2] = _verticeC.z; // C
+        verticeMatrix[3][0] = _verticeD.x; verticeMatrix[3][1] = _verticeD.y; verticeMatrix[3][2] = _verticeD.z; // D
+        verticeMatrix[4][0] = _verticeE.x; verticeMatrix[4][1] = _verticeE.y; verticeMatrix[4][2] = _verticeE.z; // E
+        verticeMatrix[5][0] = _verticeF.x; verticeMatrix[5][1] = _verticeF.y; verticeMatrix[5][2] = _verticeF.z; // F
+        verticeMatrix[6][0] = _verticeG.x; verticeMatrix[6][1] = _verticeG.y; verticeMatrix[6][2] = _verticeG.z; // G
+        verticeMatrix[7][0] = _verticeH.x; verticeMatrix[7][1] = _verticeH.y; verticeMatrix[7][2] = _verticeH.z; // H
+
+        if (anglex != 0.0f)
         {
-            for (int i=0; i<=2; i++)
+            for (int j=0; j<=7; j++)
             {
-               newPoint[i] = (rx[i][0] * _center.x) + (rx[i][1] * _center.y) + (rx[i][2] * _center.z);
+                for (int i=0; i<=2; i++)
+                {
+                    answer[j][i] = (rx[i][0] * verticeMatrix[j][0]) + 
+                                 (rx[i][1] * verticeMatrix[j][1]) + 
+                                 (rx[i][2] * verticeMatrix[j][2]);
+                }
             }            
         }
 
-        if (angley != 0)
+        if (angley != 0.0f)
         {
-            for (int i=0; i<=2; i++)
+            for (int j=0; j<=7; j++)
             {
-               newPoint[i] = (ry[i][0] * _center.x) + (ry[i][1] * _center.y) + (ry[i][2] * _center.z);
-            }
+                for (int i=0; i<=2; i++)
+                {
+                    answer[j][i] = (ry[i][0] * verticeMatrix[j][0]) + 
+                                 (ry[i][1] * verticeMatrix[j][1]) + 
+                                 (ry[i][2] * verticeMatrix[j][2]);
+                }
+            }  
         }
 
-        if (anglez != 0)
+        if (anglez != 0.0f)
         {
-            for (int i=0; i<=2; i++)
+            for (int j=0; j<=7; j++)
             {
-               newPoint[i] = (rz[i][0] * _center.x) + (rz[i][1] * _center.y) + (rz[i][2] * _center.z);
-            }
+                for (int i=0; i<=2; i++)
+                {
+                    answer[j][i] = (rz[i][0] * verticeMatrix[j][0]) + 
+                                 (rz[i][1] * verticeMatrix[j][1]) + 
+                                 (rz[i][2] * verticeMatrix[j][2]);
+                }
+            }  
         }
 
-        _center.x = newPoint[0];
-        _center.y = newPoint[1];
-        _center.z = newPoint[2];
-
-        // A
-        for (int i=0; i<2; i++) newPoint[i] = 0.0f;
-
-        if (anglex != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rx[i][0] * _verticeA.x) + (rx[i][1] * _verticeA.y) + (rx[i][2] * _verticeA.z);
-            }            
-        }
-
-        if (angley != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (ry[i][0] * _verticeA.x) + (ry[i][1] * _verticeA.y) + (ry[i][2] * _verticeA.z);
-            }
-        }
-
-        if (anglez != 0)
-        { 
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rz[i][0] * _verticeA.x) + (rz[i][1] * _verticeA.y) + (rz[i][2] * _verticeA.z);
-            }
-        }
-
-        _verticeA.x = newPoint[0];
-        _verticeA.y = newPoint[1];
-        _verticeA.z = newPoint[2];
-
-
-        // B
-        for (int i=0; i<2; i++) newPoint[i] = 0.0f;
-
-        if (anglex != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rx[i][0] * _verticeB.x) + (rx[i][1] * _verticeB.y) + (rx[i][2] * _verticeB.z);
-            }            
-        }
-
-        if (angley != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (ry[i][0] * _verticeB.x) + (ry[i][1] * _verticeB.y) + (ry[i][2] * _verticeB.z);
-            }
-        }
-
-        if (anglez != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rz[i][0] * _verticeB.x) + (rz[i][1] * _verticeB.y) + (rz[i][2] * _verticeB.z);
-            }
-        }
-
-        _verticeB.x = newPoint[0];
-        _verticeB.y = newPoint[1];
-        _verticeB.z = newPoint[2];
-
-
-        // C
-        for (int i=0; i<2; i++) newPoint[i] = 0.0f;
-
-        if (anglex != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rx[i][0] * _verticeC.x) + (rx[i][1] * _verticeC.y) + (rx[i][2] * _verticeC.z);
-            }            
-        }
-
-        if (angley != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (ry[i][0] * _verticeC.x) + (ry[i][1] * _verticeC.y) + (ry[i][2] * _verticeC.z);
-            }
-        }
-
-        if (anglez != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rz[i][0] * _verticeC.x) + (rz[i][1] * _verticeC.y) + (rz[i][2] * _verticeC.z);
-            }
-        }
-
-        _verticeC.x = newPoint[0];
-        _verticeC.y = newPoint[1];
-        _verticeC.z = newPoint[2];
-
-
-        // D
-        for (int i=0; i<2; i++) newPoint[i] = 0.0f;
-
-        if (anglex != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rx[i][0] * _verticeD.x) + (rx[i][1] * _verticeD.y) + (rx[i][2] * _verticeD.z);
-            }            
-        }
-
-        if (angley != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (ry[i][0] * _verticeD.x) + (ry[i][1] * _verticeD.y) + (ry[i][2] * _verticeD.z);
-            }
-        }
-
-        if (anglez != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rz[i][0] * _verticeD.x) + (rz[i][1] * _verticeD.y) + (rz[i][2] * _verticeD.z);
-            }
-        }
-
-        _verticeD.x = newPoint[0];
-        _verticeD.y = newPoint[1];
-        _verticeD.z = newPoint[2];
-
-
-        // E
-        for (int i=0; i<2; i++) newPoint[i] = 0.0f;
-
-        if (anglex != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rx[i][0] * _verticeE.x) + (rx[i][1] * _verticeE.y) + (rx[i][2] * _verticeE.z);
-            }            
-        }
-
-        if (angley != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (ry[i][0] * _verticeE.x) + (ry[i][1] * _verticeE.y) + (ry[i][2] * _verticeE.z);
-            }
-        }
-
-        if (anglez != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rz[i][0] * _verticeE.x) + (rz[i][1] * _verticeE.y) + (rz[i][2] * _verticeE.z);
-            }
-        }
-
-        _verticeE.x = newPoint[0];
-        _verticeE.y = newPoint[1];
-        _verticeE.z = newPoint[2];
-
-
-        // F
-        for (int i=0; i<2; i++) newPoint[i] = 0.0f;
-
-        if (anglex != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rx[i][0] * _verticeF.x) + (rx[i][1] * _verticeF.y) + (rx[i][2] * _verticeF.z);
-            }            
-        }
-
-        if (angley != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (ry[i][0] * _verticeF.x) + (ry[i][1] * _verticeF.y) + (ry[i][2] * _verticeF.z);
-            }
-        }
-
-        if (anglez != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rz[i][0] * _verticeF.x) + (rz[i][1] * _verticeF.y) + (rz[i][2] * _verticeF.z);
-            }
-        }
-
-        _verticeF.x = newPoint[0];
-        _verticeF.y = newPoint[1];
-        _verticeF.z = newPoint[2];
-
-
-        // G
-        for (int i=0; i<2; i++) newPoint[i] = 0.0f;
-
-        if (anglex != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rx[i][0] * _verticeG.x) + (rx[i][1] * _verticeG.y) + (rx[i][2] * _verticeG.z);
-            }            
-        }
-
-        if (angley != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (ry[i][0] * _verticeG.x) + (ry[i][1] * _verticeG.y) + (ry[i][2] * _verticeG.z);
-            }
-        }
-
-        if (anglez != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rz[i][0] * _verticeG.x) + (rz[i][1] * _verticeG.y) + (rz[i][2] * _verticeG.z);
-            }
-        }
-
-        _verticeG.x = newPoint[0];
-        _verticeG.y = newPoint[1];
-        _verticeG.z = newPoint[2];
-
-
-        // H
-        for (int i=0; i<2; i++) newPoint[i] = 0.0f;
-
-        if (anglex != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rx[i][0] * _verticeH.x) + (rx[i][1] * _verticeH.y) + (rx[i][2] * _verticeH.z);
-            }            
-        }
-
-        if (angley != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (ry[i][0] * _verticeH.x) + (ry[i][1] * _verticeH.y) + (ry[i][2] * _verticeH.z);
-            }
-        }
-
-        if (anglez != 0)
-        {
-            for (int i=0; i<=2; i++)
-            {
-               newPoint[i] = (rz[i][0] * _verticeH.x) + (rz[i][1] * _verticeH.y) + (rz[i][2] * _verticeH.z);
-            }
-        }
-
-        _verticeH.x = newPoint[0];
-        _verticeH.y = newPoint[1];
-        _verticeH.z = newPoint[2];
+        _verticeA.x = answer[0][0]; _verticeA.y = answer[0][1]; _verticeA.z = answer[0][2]; // A
+        _verticeB.x = answer[1][0]; _verticeB.y = answer[1][1]; _verticeB.z = answer[1][2]; // B
+        _verticeC.x = answer[2][0]; _verticeC.y = answer[2][1]; _verticeC.z = answer[2][2]; // C
+        _verticeD.x = answer[3][0]; _verticeD.y = answer[3][1]; _verticeD.z = answer[3][2]; // D
+        _verticeE.x = answer[4][0]; _verticeE.y = answer[4][1]; _verticeE.z = answer[4][2]; // E
+        _verticeF.x = answer[5][0]; _verticeF.y = answer[5][1]; _verticeF.z = answer[5][2]; // F
+        _verticeG.x = answer[6][0]; _verticeG.y = answer[6][1]; _verticeG.z = answer[6][2]; // G
+        _verticeH.x = answer[7][0]; _verticeH.y = answer[7][1]; _verticeH.z = answer[7][2]; // H
     }
 
     void scale()
