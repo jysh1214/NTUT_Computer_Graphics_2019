@@ -7,14 +7,6 @@
 
 using namespace std;
 
-float cubeX = 0.0f;
-float cubeY = 0.0f;
-float cubeZ = 0.0f;
-
-float angX = 0.0f;
-float angY = 0.0f;
-float angZ = 0.0f;
-
 string choose = "a";
 
 /* all object */
@@ -110,6 +102,21 @@ void keyboard(unsigned char key, int x, int y)
         case 'c':
             if (choose == "a") a.rotation(0.0f, 0.0f, 0.1f);
             if (choose == "b") b.rotation(0.0f, 0.0f, 0.1f);
+            break;
+
+        case 'p':
+            if (choose == "a") a.scale(1.1f, 1.0f, 1.0f);
+            if (choose == "b") b.scale(1.1f, 1.0f, 1.0f);
+            break;
+
+        case 'o':
+            if (choose == "a") a.scale(1.0f, 1.1f, 1.0f);
+            if (choose == "b") b.scale(1.0f, 1.1f, 1.0f);
+            break;
+
+        case 'i':
+            if (choose == "a") a.scale(1.0f, 1.0f, 1.1f);
+            if (choose == "b") b.scale(1.0f, 1.0f, 1.1f);
             break;
 
         default:
