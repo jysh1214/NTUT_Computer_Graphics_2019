@@ -50,7 +50,9 @@ public:
 
         _verticeH.x = _center.x + _length;
         _verticeH.y = _center.y + _length;
-        _verticeH.z = _center.z + _length; 
+        _verticeH.z = _center.z + _length;
+
+        updateVerticeMatrix();
     }
 
     virtual ~Cube(){}
@@ -286,94 +288,119 @@ public:
         _verticeH.x += x;
         _verticeH.y += y;
         _verticeH.z += z;
+
+        updateVerticeMatrix();
     }
 
     void rotation(float anglex, float angley, float anglez)
     {
-        // 單獨對 X 軸旋轉
-        float rx[3][3] = {{1, 0, 0}, 
-        {0, float(cos(anglex)), float(sin(anglex))}, 
-        {0, -float(sin(anglex)), float(cos(anglex))}};
-
-        // 單獨對 Y 軸旋轉
-        float ry[3][3] = {{float(cos(angley)), 0, -float(sin(angley))}, 
-        {0, 1, 0}, 
-        {float(sin(angley)), 0, float(cos(angley))}};
-
-        // 單獨對 Z 軸旋轉
-        float rz[3][3] = {{float(cos(anglez)), float(sin(anglez)), 0}, 
-        {-float(sin(anglez)), float(cos(anglez)), 0}, 
-        {0, 0, 1}};
-
-        float verticeMatrix[8][3]; float answer[8][3];
-
-        verticeMatrix[0][0] = _verticeA.x; verticeMatrix[0][1] = _verticeA.y; verticeMatrix[0][2] = _verticeA.z; // A
-        verticeMatrix[1][0] = _verticeB.x; verticeMatrix[1][1] = _verticeB.y; verticeMatrix[1][2] = _verticeB.z; // B
-        verticeMatrix[2][0] = _verticeC.x; verticeMatrix[2][1] = _verticeC.y; verticeMatrix[2][2] = _verticeC.z; // C
-        verticeMatrix[3][0] = _verticeD.x; verticeMatrix[3][1] = _verticeD.y; verticeMatrix[3][2] = _verticeD.z; // D
-        verticeMatrix[4][0] = _verticeE.x; verticeMatrix[4][1] = _verticeE.y; verticeMatrix[4][2] = _verticeE.z; // E
-        verticeMatrix[5][0] = _verticeF.x; verticeMatrix[5][1] = _verticeF.y; verticeMatrix[5][2] = _verticeF.z; // F
-        verticeMatrix[6][0] = _verticeG.x; verticeMatrix[6][1] = _verticeG.y; verticeMatrix[6][2] = _verticeG.z; // G
-        verticeMatrix[7][0] = _verticeH.x; verticeMatrix[7][1] = _verticeH.y; verticeMatrix[7][2] = _verticeH.z; // H
-
         if (anglex != 0.0f)
         {
+        	// 單獨對 X 軸旋轉
+            float rx[3][3] = {{1, 0, 0}, 
+            {0, float(cos(anglex)), float(sin(anglex))}, 
+            {0, -float(sin(anglex)), float(cos(anglex))}};
+
             for (int j=0; j<=7; j++)
             {
                 for (int i=0; i<=2; i++)
                 {
-                    answer[j][i] = (rx[i][0] * verticeMatrix[j][0]) + 
-                                 (rx[i][1] * verticeMatrix[j][1]) + 
-                                 (rx[i][2] * verticeMatrix[j][2]);
+                    _answerMatrix[j][i] = (rx[i][0] * _verticeMatrix[j][0]) + 
+                                          (rx[i][1] * _verticeMatrix[j][1]) + 
+                                          (rx[i][2] * _verticeMatrix[j][2]);
                 }
             }            
         }
 
         if (angley != 0.0f)
         {
+
+        	// 單獨對 Y 軸旋轉
+            float ry[3][3] = {{float(cos(angley)), 0, -float(sin(angley))}, 
+            {0, 1, 0}, 
+            {float(sin(angley)), 0, float(cos(angley))}};
+
             for (int j=0; j<=7; j++)
             {
                 for (int i=0; i<=2; i++)
                 {
-                    answer[j][i] = (ry[i][0] * verticeMatrix[j][0]) + 
-                                 (ry[i][1] * verticeMatrix[j][1]) + 
-                                 (ry[i][2] * verticeMatrix[j][2]);
+                    _answerMatrix[j][i] = (ry[i][0] * _verticeMatrix[j][0]) + 
+                                   (ry[i][1] * _verticeMatrix[j][1]) + 
+                                   (ry[i][2] * _verticeMatrix[j][2]);
                 }
             }  
         }
 
         if (anglez != 0.0f)
         {
+        	// 單獨對 Z 軸旋轉
+            float rz[3][3] = {{float(cos(anglez)), float(sin(anglez)), 0}, 
+            {-float(sin(anglez)), float(cos(anglez)), 0}, 
+            {0, 0, 1}};
+
             for (int j=0; j<=7; j++)
             {
                 for (int i=0; i<=2; i++)
                 {
-                    answer[j][i] = (rz[i][0] * verticeMatrix[j][0]) + 
-                                 (rz[i][1] * verticeMatrix[j][1]) + 
-                                 (rz[i][2] * verticeMatrix[j][2]);
+                    _answerMatrix[j][i] = (rz[i][0] * _verticeMatrix[j][0]) + 
+                                   (rz[i][1] * _verticeMatrix[j][1]) + 
+                                   (rz[i][2] * _verticeMatrix[j][2]);
                 }
             }  
         }
 
-        _verticeA.x = answer[0][0]; _verticeA.y = answer[0][1]; _verticeA.z = answer[0][2]; // A
-        _verticeB.x = answer[1][0]; _verticeB.y = answer[1][1]; _verticeB.z = answer[1][2]; // B
-        _verticeC.x = answer[2][0]; _verticeC.y = answer[2][1]; _verticeC.z = answer[2][2]; // C
-        _verticeD.x = answer[3][0]; _verticeD.y = answer[3][1]; _verticeD.z = answer[3][2]; // D
-        _verticeE.x = answer[4][0]; _verticeE.y = answer[4][1]; _verticeE.z = answer[4][2]; // E
-        _verticeF.x = answer[5][0]; _verticeF.y = answer[5][1]; _verticeF.z = answer[5][2]; // F
-        _verticeG.x = answer[6][0]; _verticeG.y = answer[6][1]; _verticeG.z = answer[6][2]; // G
-        _verticeH.x = answer[7][0]; _verticeH.y = answer[7][1]; _verticeH.z = answer[7][2]; // H
+        assignAnswerMatrix();
+        updateVerticeMatrix();
     }
 
-    void scale()
+    void scale(float sizex, float sizey, float sizez)
     {
-        
+        float scaleMatrix[3][3] = {{sizex, 0, 0}, {0, sizey, 0}, {0, 0, sizez}};
+
+        for (int j=0; j<=7; j++)
+        {
+            for (int i=0; i<=2; i++)
+            {
+                _answerMatrix[j][i] = (scaleMatrix[i][0] * _verticeMatrix[j][0]) + 
+                                      (scaleMatrix[i][1] * _verticeMatrix[j][1]) + 
+                                      (scaleMatrix[i][2] * _verticeMatrix[j][2]);
+            }
+        }
+
+        assignAnswerMatrix();
+        updateVerticeMatrix();
     }
 
 private:
     Point _center; float _length;
-    // Point _org; 
     Point _vectorA; Point _vectorB; Point _vectorC;
     Point _verticeA; Point _verticeB; Point _verticeC; Point _verticeD;
     Point _verticeE; Point _verticeF; Point _verticeG; Point _verticeH;
+    float _verticeMatrix[8][3];
+    float _answerMatrix[8][3];
+
+    void updateVerticeMatrix()
+    {
+    	_verticeMatrix[0][0] = _verticeA.x; _verticeMatrix[0][1] = _verticeA.y; _verticeMatrix[0][2] = _verticeA.z; // A
+        _verticeMatrix[1][0] = _verticeB.x; _verticeMatrix[1][1] = _verticeB.y; _verticeMatrix[1][2] = _verticeB.z; // B
+        _verticeMatrix[2][0] = _verticeC.x; _verticeMatrix[2][1] = _verticeC.y; _verticeMatrix[2][2] = _verticeC.z; // C
+        _verticeMatrix[3][0] = _verticeD.x; _verticeMatrix[3][1] = _verticeD.y; _verticeMatrix[3][2] = _verticeD.z; // D
+        _verticeMatrix[4][0] = _verticeE.x; _verticeMatrix[4][1] = _verticeE.y; _verticeMatrix[4][2] = _verticeE.z; // E
+        _verticeMatrix[5][0] = _verticeF.x; _verticeMatrix[5][1] = _verticeF.y; _verticeMatrix[5][2] = _verticeF.z; // F
+        _verticeMatrix[6][0] = _verticeG.x; _verticeMatrix[6][1] = _verticeG.y; _verticeMatrix[6][2] = _verticeG.z; // G
+        _verticeMatrix[7][0] = _verticeH.x; _verticeMatrix[7][1] = _verticeH.y; _verticeMatrix[7][2] = _verticeH.z; // H
+    }
+
+    void assignAnswerMatrix()
+    {
+    	_verticeA.x = _answerMatrix[0][0]; _verticeA.y = _answerMatrix[0][1]; _verticeA.z = _answerMatrix[0][2]; // A
+        _verticeB.x = _answerMatrix[1][0]; _verticeB.y = _answerMatrix[1][1]; _verticeB.z = _answerMatrix[1][2]; // B
+        _verticeC.x = _answerMatrix[2][0]; _verticeC.y = _answerMatrix[2][1]; _verticeC.z = _answerMatrix[2][2]; // C
+        _verticeD.x = _answerMatrix[3][0]; _verticeD.y = _answerMatrix[3][1]; _verticeD.z = _answerMatrix[3][2]; // D
+        _verticeE.x = _answerMatrix[4][0]; _verticeE.y = _answerMatrix[4][1]; _verticeE.z = _answerMatrix[4][2]; // E
+        _verticeF.x = _answerMatrix[5][0]; _verticeF.y = _answerMatrix[5][1]; _verticeF.z = _answerMatrix[5][2]; // F
+        _verticeG.x = _answerMatrix[6][0]; _verticeG.y = _answerMatrix[6][1]; _verticeG.z = _answerMatrix[6][2]; // G
+        _verticeH.x = _answerMatrix[7][0]; _verticeH.y = _answerMatrix[7][1]; _verticeH.z = _answerMatrix[7][2]; // H
+    }
+
 };
