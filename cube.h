@@ -280,7 +280,6 @@ public:
         _verticeF.y += y;
         _verticeF.z += z;
 
-
         _verticeG.x += x;
         _verticeG.y += y;
         _verticeG.z += z;
