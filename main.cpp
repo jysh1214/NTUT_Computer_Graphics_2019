@@ -1,6 +1,11 @@
 #include <math.h>
 #include <GL/glut.h>
 #include<stdio.h>
+#include <string>
+
+#include "cube.h"
+
+using namespace std;
 
 float cubeX = 0.0f;
 float cubeY = 0.0f;
@@ -10,6 +15,12 @@ float angX = 0.0f;
 float angY = 0.0f;
 float angZ = 0.0f;
 
+string choose = "a";
+
+/* all object */
+Cube a = Cube(0, 0, 0, 1);
+Cube b = Cube(-2, -2, 0, 1);
+
 void RenderScence(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -18,23 +29,15 @@ void RenderScence(void)
     gluLookAt(0, 0, 5.0f, 0, 0, 0, 0, 1, 0);
 
     //畫X軸Y軸
-    glBegin(GL_LINES); 
+    glBegin(GL_LINES);
         glColor3f( 0, 1, 0);glVertex3f(-8, 0, 0);
         glColor3f( 0, 1, 0);glVertex3f( 8, 0, 0); 
         glColor3f( 0, 1, 0);glVertex3f( 0, 8, 0);
         glColor3f( 0, 1, 0);glVertex3f( 0,-8, 0);       
     glEnd();
 
-    //畫出cube
-    glColor3f(0, 0, 1);
-    glTranslatef(cubeX, cubeY, cubeZ); //位移
-
-    //旋轉
-    glRotatef(angX, 1.0, 0.0, 0.0);
-    glRotatef(angY, 0.0, 1.0, 0.0);
-    glRotatef(angZ, 0.0, 0.0, 1.0);
-
-    glutSolidCube(3);
+    a.draw();
+    b.draw();
 
     glFlush();
     glutSwapBuffers();
@@ -50,26 +53,29 @@ void init(void)
     glEnable(GL_DEPTH_TEST);
 }
 
-
 void Skeyboard(int key, int x, int y)
 {
     //按鍵操作
     switch(key)
     {
         case GLUT_KEY_LEFT:
-            cubeX -= 0.1f;
+            if (choose == "a") a.move(-0.1f, 0, 0);
+            if (choose == "b") b.move(-0.1f, 0, 0);
             break;
 
         case GLUT_KEY_RIGHT:
-            cubeX += 0.1f;
+            if (choose == "a") a.move( 0.1f, 0, 0);
+            if (choose == "b") b.move( 0.1f, 0, 0);
             break;
 
         case GLUT_KEY_UP:
-            cubeY += 0.1f;
+            if (choose == "a") a.move( 0, 0.1f, 0);
+            if (choose == "b") b.move( 0, 0.1f, 0);
             break;
 
         case GLUT_KEY_DOWN:
-            cubeY -= 0.1f;
+            if (choose == "a") a.move( 0,-0.1f, 0);
+            if (choose == "b") b.move( 0,-0.1f, 0);
             break;
 
         default:
@@ -84,15 +90,26 @@ void keyboard(unsigned char key, int x, int y)
     switch(key)
     {
         case 'a':
-            angX += 1.0f;
+            choose = "a";
             break;
 
-        case 's':
-            angY += 1.0f;
+        case 'b':
+            choose = "b";
             break;
 
-        case 'd':
-            angZ += 1.0f;
+        case 'z':
+            if (choose == "a") a.rotation(0.1f, 0.0f, 0.0f);
+            if (choose == "b") b.rotation(0.1f, 0.0f, 0.0f);
+            break;
+
+        case 'x':
+            if (choose == "a") a.rotation(0.0f, 0.1f, 0.0f);
+            if (choose == "b") b.rotation(0.0f, 0.1f, 0.0f);
+            break;
+
+        case 'c':
+            if (choose == "a") a.rotation(0.0f, 0.0f, 0.1f);
+            if (choose == "b") b.rotation(0.0f, 0.0f, 0.1f);
             break;
 
         default:
@@ -103,13 +120,13 @@ void keyboard(unsigned char key, int x, int y)
 
 int main(int argc, char** argv)
 {
-    gluLookAt(0,0,-10.0f,0,0,0, 0,1,0);
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Cube");
+    glutCreateWindow("A B Cube");
     init();
+    
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(Skeyboard);
     glutDisplayFunc(RenderScence);
