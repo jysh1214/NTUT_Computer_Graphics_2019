@@ -4,14 +4,23 @@
 #include <string>
 
 #include "cube.h"
+#include "dot.h"
 
 using namespace std;
 
-string choose = "a";
+float WINDOW_SIZE_H = 500;
+float WINDOW_SIZE_L = 500;
+
+string CHOOSE = "a";
+
+float M_X = 0.0f;
+float M_Y = 0.0f;
 
 /* all object */
-Cube a = Cube(0, 0, 0, 1);
+Cube a = Cube(-0.5, -0.5, 0, 1);
 Cube b = Cube(-2, -2, 0, 1);
+
+dot p = dot(M_X, M_Y);
 
 void RenderScence(void)
 {
@@ -30,6 +39,8 @@ void RenderScence(void)
 
     a.draw();
     b.draw();
+
+    p.draw(M_X, M_Y);
 
     glFlush();
     glutSwapBuffers();
@@ -51,23 +62,23 @@ void Skeyboard(int key, int x, int y)
     switch(key)
     {
         case GLUT_KEY_LEFT:
-            if (choose == "a") a.move(-0.1f, 0, 0);
-            if (choose == "b") b.move(-0.1f, 0, 0);
+            if (CHOOSE == "a") a.move(-0.1f, 0, 0);
+            if (CHOOSE == "b") b.move(-0.1f, 0, 0);
             break;
 
         case GLUT_KEY_RIGHT:
-            if (choose == "a") a.move( 0.1f, 0, 0);
-            if (choose == "b") b.move( 0.1f, 0, 0);
+            if (CHOOSE == "a") a.move( 0.1f, 0, 0);
+            if (CHOOSE == "b") b.move( 0.1f, 0, 0);
             break;
 
         case GLUT_KEY_UP:
-            if (choose == "a") a.move( 0, 0.1f, 0);
-            if (choose == "b") b.move( 0, 0.1f, 0);
+            if (CHOOSE == "a") a.move( 0, 0.1f, 0);
+            if (CHOOSE == "b") b.move( 0, 0.1f, 0);
             break;
 
         case GLUT_KEY_DOWN:
-            if (choose == "a") a.move( 0,-0.1f, 0);
-            if (choose == "b") b.move( 0,-0.1f, 0);
+            if (CHOOSE == "a") a.move( 0,-0.1f, 0);
+            if (CHOOSE == "b") b.move( 0,-0.1f, 0);
             break;
 
         default:
@@ -82,41 +93,51 @@ void keyboard(unsigned char key, int x, int y)
     switch(key)
     {
         case 'a':
-            choose = "a";
+            CHOOSE = "a";
             break;
 
         case 'b':
-            choose = "b";
+            CHOOSE = "b";
             break;
 
         case 'z':
-            if (choose == "a") a.rotation(0.1f, 0.0f, 0.0f);
-            if (choose == "b") b.rotation(0.1f, 0.0f, 0.0f);
+            if (CHOOSE == "a") a.rotation(0.1f, 0.0f, 0.0f);
+            if (CHOOSE == "b") b.rotation(0.1f, 0.0f, 0.0f);
             break;
 
         case 'x':
-            if (choose == "a") a.rotation(0.0f, 0.1f, 0.0f);
-            if (choose == "b") b.rotation(0.0f, 0.1f, 0.0f);
+            if (CHOOSE == "a") a.rotation(0.0f, 0.1f, 0.0f);
+            if (CHOOSE == "b") b.rotation(0.0f, 0.1f, 0.0f);
             break;
 
         case 'c':
-            if (choose == "a") a.rotation(0.0f, 0.0f, 0.1f);
-            if (choose == "b") b.rotation(0.0f, 0.0f, 0.1f);
+            if (CHOOSE == "a") a.rotation(0.0f, 0.0f, 0.1f);
+            if (CHOOSE == "b") b.rotation(0.0f, 0.0f, 0.1f);
             break;
 
         case 'p':
-            if (choose == "a") a.scale(1.1f, 1.0f, 1.0f);
-            if (choose == "b") b.scale(1.1f, 1.0f, 1.0f);
+            if (CHOOSE == "a") a.scale(1.1f, 1.0f, 1.0f);
+            if (CHOOSE == "b") b.scale(1.1f, 1.0f, 1.0f);
             break;
 
         case 'o':
-            if (choose == "a") a.scale(1.0f, 1.1f, 1.0f);
-            if (choose == "b") b.scale(1.0f, 1.1f, 1.0f);
+            if (CHOOSE == "a") a.scale(1.0f, 1.1f, 1.0f);
+            if (CHOOSE == "b") b.scale(1.0f, 1.1f, 1.0f);
             break;
 
         case 'i':
-            if (choose == "a") a.scale(1.0f, 1.0f, 1.1f);
-            if (choose == "b") b.scale(1.0f, 1.0f, 1.1f);
+            if (CHOOSE == "a") a.scale(1.0f, 1.0f, 1.1f);
+            if (CHOOSE == "b") b.scale(1.0f, 1.0f, 1.1f);
+            break;
+
+        case 'r':
+            if (CHOOSE == "a") a.reset();
+            if (CHOOSE == "b") b.reset();
+            break;
+
+        case 'n':
+            if (CHOOSE == "a") a.crotation(M_X-250.0, 250.0-M_Y, 0.0f, 0.1f);
+            if (CHOOSE == "b") b.crotation(M_X-250.0, 250.0-M_Y, 0.0f, 0.1f);
             break;
 
         default:
@@ -125,11 +146,21 @@ void keyboard(unsigned char key, int x, int y)
     glutPostRedisplay();
 }
 
+void Mouse(int button, int state, int x, int y)
+{
+    if (button == GLUT_LEFT_BUTTON)
+    {
+        M_X = float(x); 
+        M_Y = float(y);
+    }
+    glutPostRedisplay();
+}
+
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(500, 500);
+    glutInitWindowSize(WINDOW_SIZE_H, WINDOW_SIZE_L);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("A B Cube");
     init();
@@ -137,6 +168,7 @@ int main(int argc, char** argv)
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(Skeyboard);
     glutDisplayFunc(RenderScence);
+    glutMouseFunc(Mouse);
     glutMainLoop();
 
     return 0;
