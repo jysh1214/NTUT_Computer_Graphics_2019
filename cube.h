@@ -1,17 +1,12 @@
+#ifndef CUBE_H
+#define CUBE_H
+
 #include <GL/glut.h>
+#include <cmath>
+
+#include "point.h"
 
 using namespace std;
-
-struct Point
-{
-    float x; float y; float z;
-};
-
-Point vecAdd(Point a, Point b)
-{
-    a.x += b.x; a.y += b.y; a.z += b.z;
-    return a;
-}
 
 class Cube
 {
@@ -53,6 +48,7 @@ public:
         _verticeH.z = _center.z + _length;
 
         updateVerticeMatrix();
+        saveOriginVertice();
     }
 
     virtual ~Cube(){}
@@ -60,6 +56,8 @@ public:
     void draw()
     {
         glPushMatrix();
+
+        // MatrixRest();
 
         /* A面 */
         glColor3f( 1, 0, 0);
@@ -291,6 +289,53 @@ public:
         updateVerticeMatrix();
     }
 
+    void crotation(float x, float y, float z, float angle)
+    {
+
+        float l = sqrt((x*x) + (y*y) + (z*z));
+        l = sqrt((l*l) + (z*z));
+
+        x /= l;
+        y /= l;
+        z /= l;
+
+        float cosc = cos(angle);
+        float sinc = sin(angle);
+
+        // float z = 0.0f;
+
+        // float rm[3][3] = {{cosc+(1-cosc)*x*x,     (1-cosc)*x*y-sinc*z,   (1-cosc)*x*z+sinc*y}, 
+        //                   {(1-cosc)*x*y+sinc*z,   cosc+(1-cosc)*y*y,     (1-cosc)*y*z-sinc*x}, 
+        //                   {(1-cosc)*x*z-(sinc*y), (1-cosc)*z*y-(sinc)*x, cosc+(1-cosc)*z*z}}
+
+        float m00=cosc+(1-cosc)*x*x;     float m10=(1-cosc)*x*y-sinc*z;   float m20=(1-cosc)*x*z+sinc*y;
+
+        float m01=(1-cosc)*x*y+sinc*z;   float m11=cosc+(1-cosc)*y*y;     float m21=(1-cosc)*y*z-sinc*x;
+
+        float m02=(1-cosc)*x*z-(sinc*y); float m12=(1-cosc)*z*y+(sinc)*x; float m22=cosc+(1-cosc)*z*z;
+
+        // assignAnswerMatrix();
+        // updateVerticeMatrix();
+
+        for (int j=0; j<=7; j++)
+        {
+                _answerMatrix[j][0] = (m00 * _verticeMatrix[j][0]) + 
+                                      (m10 * _verticeMatrix[j][1]) + 
+                                      (m20 * _verticeMatrix[j][2]);
+
+                _answerMatrix[j][1] = (m01 * _verticeMatrix[j][0]) + 
+                                      (m11 * _verticeMatrix[j][1]) + 
+                                      (m21 * _verticeMatrix[j][2]);   
+                                      
+                _answerMatrix[j][2] = (m02 * _verticeMatrix[j][0]) + 
+                                      (m12 * _verticeMatrix[j][1]) + 
+                                      (m22 * _verticeMatrix[j][2]);            
+
+        }
+        assignAnswerMatrix();
+        updateVerticeMatrix();
+    }
+
     void rotation(float anglex, float angley, float anglez)
     {
         if (anglex != 0.0f)
@@ -370,6 +415,11 @@ public:
         updateVerticeMatrix();
     }
 
+    void reset()
+    {
+        assignOringin();
+    }
+
 private:
     Point _center; float _length;
     Point _vectorA; Point _vectorB; Point _vectorC;
@@ -377,6 +427,8 @@ private:
     Point _verticeE; Point _verticeF; Point _verticeG; Point _verticeH;
     float _verticeMatrix[8][3];
     float _answerMatrix[8][3];
+
+    float _originVertice[8][3];
 
     void updateVerticeMatrix()
     {
@@ -402,4 +454,28 @@ private:
         _verticeH.x = _answerMatrix[7][0]; _verticeH.y = _answerMatrix[7][1]; _verticeH.z = _answerMatrix[7][2]; // H
     }
 
+    void saveOriginVertice()
+    {
+        _originVertice[0][0] = _verticeA.x; _originVertice[0][1] = _verticeA.y; _originVertice[0][2] = _verticeA.z; // A
+        _originVertice[1][0] = _verticeB.x; _originVertice[1][1] = _verticeB.y; _originVertice[1][2] = _verticeB.z; // B
+        _originVertice[2][0] = _verticeC.x; _originVertice[2][1] = _verticeC.y; _originVertice[2][2] = _verticeC.z; // C
+        _originVertice[3][0] = _verticeD.x; _originVertice[3][1] = _verticeD.y; _originVertice[3][2] = _verticeD.z; // D
+        _originVertice[4][0] = _verticeE.x; _originVertice[4][1] = _verticeE.y; _originVertice[4][2] = _verticeE.z; // E
+        _originVertice[5][0] = _verticeF.x; _originVertice[5][1] = _verticeF.y; _originVertice[5][2] = _verticeF.z; // F
+        _originVertice[6][0] = _verticeG.x; _originVertice[6][1] = _verticeG.y; _originVertice[6][2] = _verticeG.z; // G
+        _originVertice[7][0] = _verticeH.x; _originVertice[7][1] = _verticeH.y; _originVertice[7][2] = _verticeH.z; // H
+    }
+
+    void assignOringin()
+    {
+        _verticeA.x = _originVertice[0][0]; _verticeA.y = _originVertice[0][1]; _verticeA.z = _originVertice[0][2]; // A
+        _verticeB.x = _originVertice[1][0]; _verticeB.y = _originVertice[1][1]; _verticeB.z = _originVertice[1][2]; // B
+        _verticeC.x = _originVertice[2][0]; _verticeC.y = _originVertice[2][1]; _verticeC.z = _originVertice[2][2]; // C
+        _verticeD.x = _originVertice[3][0]; _verticeD.y = _originVertice[3][1]; _verticeD.z = _originVertice[3][2]; // D
+        _verticeE.x = _originVertice[4][0]; _verticeE.y = _originVertice[4][1]; _verticeE.z = _originVertice[4][2]; // E
+        _verticeF.x = _originVertice[5][0]; _verticeF.y = _originVertice[5][1]; _verticeF.z = _originVertice[5][2]; // F
+        _verticeG.x = _originVertice[6][0]; _verticeG.y = _originVertice[6][1]; _verticeG.z = _originVertice[6][2]; // G
+        _verticeH.x = _originVertice[7][0]; _verticeH.y = _originVertice[7][1]; _verticeH.z = _originVertice[7][2]; // H
+    }
 };
+#endif
