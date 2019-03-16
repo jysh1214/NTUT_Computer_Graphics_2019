@@ -8,8 +8,8 @@
 
 using namespace std;
 
-float WINDOW_SIZE_H = 500;
-float WINDOW_SIZE_L = 500;
+float WINDOW_SIZE_WIDTH = 500;
+float WINDOW_SIZE_HIGH = 500;
 
 string CHOOSE = "a";
 
@@ -101,18 +101,18 @@ void keyboard(unsigned char key, int x, int y)
             break;
 
         case 'z':
-            if (CHOOSE == "a") a.rotation(0.1f, 0.0f, 0.0f);
-            if (CHOOSE == "b") b.rotation(0.1f, 0.0f, 0.0f);
+            if (CHOOSE == "a") a.rotation(1.0f, 0.0f, 0.0f, 0.1f);
+            if (CHOOSE == "b") b.rotation(1.0f, 0.0f, 0.0f, 0.1f);
             break;
 
         case 'x':
-            if (CHOOSE == "a") a.rotation(0.0f, 0.1f, 0.0f);
-            if (CHOOSE == "b") b.rotation(0.0f, 0.1f, 0.0f);
+            if (CHOOSE == "a") a.rotation(0.0f, 1.0f, 0.0f, 0.1f);
+            if (CHOOSE == "b") b.rotation(0.0f, 1.0f, 0.0f, 0.1f);
             break;
 
         case 'c':
-            if (CHOOSE == "a") a.rotation(0.0f, 0.0f, 0.1f);
-            if (CHOOSE == "b") b.rotation(0.0f, 0.0f, 0.1f);
+            if (CHOOSE == "a") a.rotation(0.0f, 0.0f, 1.0f, 0.1f);
+            if (CHOOSE == "b") b.rotation(0.0f, 0.0f, 1.0f, 0.1f);
             break;
 
         case 'p':
@@ -136,8 +136,8 @@ void keyboard(unsigned char key, int x, int y)
             break;
 
         case 'n':
-            if (CHOOSE == "a") a.crotation(M_X-250.0, 250.0-M_Y, 0.0f, 0.1f);
-            if (CHOOSE == "b") b.crotation(M_X-250.0, 250.0-M_Y, 0.0f, 0.1f);
+            if (CHOOSE == "a") a.rotation(M_X-(WINDOW_SIZE_WIDTH/2), (WINDOW_SIZE_HIGH/2)-M_Y, 0.0f, 0.1f);
+            if (CHOOSE == "b") b.rotation(M_X-(WINDOW_SIZE_WIDTH/2), (WINDOW_SIZE_HIGH/2)-M_Y, 0.0f, 0.1f);
             break;
 
         default:
@@ -160,7 +160,7 @@ int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(WINDOW_SIZE_H, WINDOW_SIZE_L);
+    glutInitWindowSize(WINDOW_SIZE_WIDTH, WINDOW_SIZE_HIGH);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("A B Cube");
     init();
