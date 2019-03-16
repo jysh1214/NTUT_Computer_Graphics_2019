@@ -343,7 +343,14 @@ public:
     {
         float scaleMatrix[3][3] = {{sizex, 0.0f, 0.0f}, {0.0f, sizey, 0.0f}, {0.0f, 0.0f, sizez}};
 
-        matrixMultiplication(scaleMatrix, _verticeMatrix, _answerMatrix); 
+        try
+        {
+            matrixMultiplication(scaleMatrix, _verticeMatrix, _answerMatrix); 
+        }
+        catch (string e)
+        {
+            cout<<"Caught exception: "<<e<<endl;
+        }
 
         assignAnswerMatrix();
         updateVerticeMatrix();
