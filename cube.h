@@ -3,8 +3,10 @@
 
 #include <GL/glut.h>
 #include <cmath>
+#include <iostream>
 
 #include "point.h"
+#include "matrix_add.h"
 #include "matrix_multiplication.h"
 
 using namespace std;
@@ -249,42 +251,26 @@ public:
 
     void move(float x, float y, float z)
     {
-        // _center.x += x;
-        // _center.y += y;
-        // _center.z += z;
-        
-        _verticeA.x += x;
-        _verticeA.y += y;
-        _verticeA.z += z;
 
-        _verticeB.x += x;
-        _verticeB.y += y;
-        _verticeB.z += z;
+        float translate[3][8];
 
-        _verticeC.x += x;
-        _verticeC.y += y;
-        _verticeC.z += z;
+        for (int j=0; j<8; j++)
+        {
+            translate[0][j] = x;
+            translate[1][j] = y;
+            translate[2][j] = z;
+        }
 
-        _verticeD.x += x;
-        _verticeD.y += y;
-        _verticeD.z += z;
+        try
+        {
+            matrixAdd(_verticeMatrix, translate, _answerMatrix);
+        }
+        catch (string e)
+        {
+            cout<<"Caught exception: "<<e<<endl;
+        }
 
-        _verticeE.x += x;
-        _verticeE.y += y;
-        _verticeE.z += z;
-
-        _verticeF.x += x;
-        _verticeF.y += y;
-        _verticeF.z += z;
-
-        _verticeG.x += x;
-        _verticeG.y += y;
-        _verticeG.z += z;
-
-        _verticeH.x += x;
-        _verticeH.y += y;
-        _verticeH.z += z;
-
+        assignAnswerMatrix();
         updateVerticeMatrix();
     }
 
@@ -304,7 +290,14 @@ public:
                           {  (1-cosc)*x*y+sinc*z,     cosc+(1-cosc)*y*y, (1-cosc)*y*z-sinc*x},
                           {(1-cosc)*x*z-(sinc*y), (1-cosc)*z*y+(sinc)*x,   cosc+(1-cosc)*z*z}};
 
-        matrixMultiplication(rm, _verticeMatrix, _answerMatrix); 
+        try
+        {
+            matrixMultiplication(rm, _verticeMatrix, _answerMatrix); 
+        }
+        catch (string e)
+        {
+            cout<<"Caught exception: "<<e<<endl;
+        }
 
         assignAnswerMatrix();
         updateVerticeMatrix();

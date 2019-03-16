@@ -3,10 +3,10 @@
 
 #include <string>
 
-template <typename T, size_t ar, size_t al, size_t br,size_t bl,size_t cr,size_t cl>
+template <typename T, size_t ar, size_t al, size_t br, size_t bl, size_t cr, size_t cl>
 void matrixMultiplication(T (& a)[ar][al], T (& b)[br][bl], T (& c)[cr][cl]) // NXM * MXR
 {
-    if (al != br || ar != cr || al != cl)
+    if (al != br || ar != cr || bl != cl)
     {
         throw std::string("Error.");
     }
