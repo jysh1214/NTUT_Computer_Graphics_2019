@@ -1,10 +1,25 @@
 #include <math.h>
 #include <GL/glut.h>
-#include<stdio.h>
+#include <stdio.h>
 #include <string>
 
 #include "cube.h"
+#include "pyramid.h"
 #include "dot.h"
+
+/*
+編譯：
+g++ -std=c++11 main.cpp -o myOpenGlApp -lglut -lGLU -lGL
+
+使用說明：
+滑鼠熱一點取為建立自訂軸
+鍵盤小寫英文字母a,b選擇操作方塊
+方向健上下左右移動選取方塊
+鍵盤小寫英文字母z,x,c對x,y,z軸旋轉
+鍵盤小寫英文字母n對自訂軸旋轉
+鍵盤小寫英文字母p,o,i做scale
+鍵盤小寫英文字母r做reset
+*/
 
 using namespace std;
 
@@ -17,8 +32,8 @@ float M_X = 0.0f;
 float M_Y = 0.0f;
 
 /* all object */
-Cube a = Cube(-0.5, -0.5, 0, 1);
-Cube b = Cube(-2, -2, 0, 1);
+Cube a = Cube(-0.5, -0.5, 0, 1, 1);
+Pyramid b = Pyramid(-2, -2, 0, 1, 1, 1, 1);
 
 dot p = dot(M_X, M_Y);
 
@@ -89,7 +104,7 @@ void Skeyboard(int key, int x, int y)
 
 void keyboard(unsigned char key, int x, int y)
 {
-    //按鍵操作
+    // 按鍵操作
     switch(key)
     {
         case 'a':
