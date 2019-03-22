@@ -2,6 +2,7 @@
 #define PYRAMID_H
 
 #include <GL/glut.h>
+#include <iostream>
 
 #include "point.h"
 #include "matrix_add.h"
