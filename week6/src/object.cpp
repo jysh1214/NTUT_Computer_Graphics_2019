@@ -410,9 +410,11 @@ float * Object::updateBoundingBox()
 
     // 依照vertex數量多寡犧牲準確度，提昇效率
     int step;
-    if (_vertexNumber > 2000) step = 10;
-    else if (_vertexNumber > 1500) step = 3;
-    else if (_vertexNumber > 1000) step = 2;
+    if (_vertexNumber >= 3000) step = 6;
+    else if (_vertexNumber >= 2500) step = 5;
+    else if (_vertexNumber >= 2000) step = 4;
+    else if (_vertexNumber >= 1500) step = 3;
+    else if (_vertexNumber >= 1000) step = 2;
     else step = 1;
 
     for (int i=0; i<_vertexNumber; i+=step)
