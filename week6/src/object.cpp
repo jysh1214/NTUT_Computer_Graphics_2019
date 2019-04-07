@@ -106,7 +106,7 @@ void Object::draw()
             // Bounding Box
             if (_boundingBox == true)
             {
-                float *dis = updateBoundingBox();
+                float * dis = updateBoundingBox();
                 float max_x = dis[3]; float min_x = dis[4]; 
                 float max_y = dis[5]; float min_y = dis[6]; 
                 float max_z = dis[7]; float min_z = dis[8]; 
@@ -184,6 +184,8 @@ void Object::draw()
                     glVertex3f(min_x, max_y, min_z); // D
                     glVertex3f(min_x, max_y, max_z); // H
                 glEnd();
+
+                delete dis;
             }
         }
     }
@@ -242,7 +244,7 @@ void Object::rotation(float x, float y, float z, float angle)
 void Object::scale(float sizex, float sizey, float sizez)
 {
     float scaleMatrix[4][4] = {{sizex,  0.0f,  0.0f, 0.0f}, 
-                               { 0.0f, sizey,  0.0f, 0.0f}, 
+                               { 0.0f, sizey,  0.0f, 0.0f},
                                { 0.0f,  0.0f, sizez, 0.0f},
                                { 0.0f,  0.0f,  0.0f, 1.0f}};
 
@@ -400,34 +402,41 @@ void Object::assignAnswer()
     }
 }
 
-float *Object::updateBoundingBox()
+float * Object::updateBoundingBox()
 {
-    float _max_x = _vertexMatrix[0][0]; float _min_x = _vertexMatrix[0][0];
-    float _max_y = _vertexMatrix[1][0]; float _min_y = _vertexMatrix[1][0];
-    float _max_z = _vertexMatrix[2][0]; float _min_z = _vertexMatrix[2][0];
+    float max_x = _vertexMatrix[0][0]; float min_x = _vertexMatrix[0][0];
+    float max_y = _vertexMatrix[1][0]; float min_y = _vertexMatrix[1][0];
+    float max_z = _vertexMatrix[2][0]; float min_z = _vertexMatrix[2][0];
 
-    for (int i=0; i<_vertexNumber; i++)
+    // 依照vertex數量多寡犧牲準確度，提昇效率
+    int step;
+    if (_vertexNumber > 2000) step = 10;
+    else if (_vertexNumber > 1500) step = 3;
+    else if (_vertexNumber > 1000) step = 2;
+    else step = 1;
+
+    for (int i=0; i<_vertexNumber; i+=step)
     {
         // max
-        if (_vertexMatrix[0][i]>_max_x) _max_x=_vertexMatrix[0][i];
-        if (_vertexMatrix[1][i]>_max_y) _max_y=_vertexMatrix[1][i];
-        if (_vertexMatrix[2][i]>_max_z) _max_z=_vertexMatrix[2][i];
+        if (_vertexMatrix[0][i]>max_x) max_x=_vertexMatrix[0][i];
+        if (_vertexMatrix[1][i]>max_y) max_y=_vertexMatrix[1][i];
+        if (_vertexMatrix[2][i]>max_z) max_z=_vertexMatrix[2][i];
 
         // min
-        if (_vertexMatrix[0][i]<_min_x) _min_x=_vertexMatrix[0][i];
-        if (_vertexMatrix[1][i]<_min_y) _min_y=_vertexMatrix[1][i];
-        if (_vertexMatrix[2][i]<_min_z) _min_z=_vertexMatrix[2][i];
+        if (_vertexMatrix[0][i]<min_x) min_x=_vertexMatrix[0][i];
+        if (_vertexMatrix[1][i]<min_y) min_y=_vertexMatrix[1][i];
+        if (_vertexMatrix[2][i]<min_z) min_z=_vertexMatrix[2][i];
     }
 
-    float dis_x = _max_x - _min_x;
-    float dis_y = _max_y - _min_y;
-    float dis_z = _max_z - _min_z;
+    float dis_x = max_x - min_x;
+    float dis_y = max_y - min_y;
+    float dis_z = max_z - min_z;
 
     float *a = new float[9];
     a[0] = dis_x; a[1] = dis_y; a[2] = dis_z;
-    a[3] = _max_x; a[4] = _min_x; 
-    a[5] = _max_y; a[6] = _min_y; 
-    a[7] = _max_z; a[8] = _min_z;
+    a[3] = max_x; a[4] = min_x; 
+    a[5] = max_y; a[6] = min_y; 
+    a[7] = max_z; a[8] = min_z;
     
     return a;
 }
