@@ -31,7 +31,10 @@ private:
 
     int _vertexNumber; int _faceNumber;
 
-    float _vertexMatrix[4][10000];
+    /* 紀錄完vertex之後，後面八個再紀錄 max_x, min_x, max_y, min_y, max_z, min_z
+       所組成的八個點
+    */
+    float _vertexMatrix[4][10000]; 
     float _answerMatrix[4][10000];
 
     vector<Vertex> _vertex;

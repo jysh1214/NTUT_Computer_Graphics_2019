@@ -35,20 +35,71 @@ Object::Object(string filepath, string renderMode, string colorMode, bool boundi
         _vertexMatrix[3][i] = _vertex[i].w;
     }
 
-    // 利用bounding box做正規化
-    float * dis = updateBoundingBox();
+    float max_x = _vertexMatrix[0][0]; float min_x = _vertexMatrix[0][0];
+    float max_y = _vertexMatrix[1][0]; float min_y = _vertexMatrix[1][0];
+    float max_z = _vertexMatrix[2][0]; float min_z = _vertexMatrix[2][0];
 
-    float _min_x = dis[4];
-    float _min_y = dis[6];
-    float _min_z = dis[8];
-
-    for (int i=0; i<_vertexNumber; i++)
+    for (int i=0; i<_vertexNumber; i ++)
     {
-        _vertexMatrix[0][i] = ((_vertexMatrix[0][i]-_min_x)/(dis[0]) * 2) - 1;
-        _vertexMatrix[1][i] = ((_vertexMatrix[1][i]-_min_y)/(dis[1]) * 2) - 1;
-        _vertexMatrix[2][i] = ((_vertexMatrix[2][i]-_min_z)/(dis[2]) * 2) - 1;
+        // max
+        if (_vertexMatrix[0][i]>max_x) max_x=_vertexMatrix[0][i];
+        if (_vertexMatrix[1][i]>max_y) max_y=_vertexMatrix[1][i];
+        if (_vertexMatrix[2][i]>max_z) max_z=_vertexMatrix[2][i];
+
+        // min
+        if (_vertexMatrix[0][i]<min_x) min_x=_vertexMatrix[0][i];
+        if (_vertexMatrix[1][i]<min_y) min_y=_vertexMatrix[1][i];
+        if (_vertexMatrix[2][i]<min_z) min_z=_vertexMatrix[2][i];
     }
-    delete dis;
+
+    // 添加bounding box所需訊息至_vertexMatrix最後面
+    // A min_x, min_y, min_z
+    _vertexMatrix[0][_vertexNumber+0] = min_x;
+    _vertexMatrix[1][_vertexNumber+0] = min_y;
+    _vertexMatrix[2][_vertexNumber+0] = min_z;
+
+    // B max_x, min_y, min_z
+    _vertexMatrix[0][_vertexNumber+1] = max_x;
+    _vertexMatrix[1][_vertexNumber+1] = min_y;
+    _vertexMatrix[2][_vertexNumber+1] = min_z;
+
+    // C max_x, max_y, min_z
+    _vertexMatrix[0][_vertexNumber+2] = max_x;
+    _vertexMatrix[1][_vertexNumber+2] = max_y;
+    _vertexMatrix[2][_vertexNumber+2] = min_z;
+
+    // D min_x, max_y, min_z
+    _vertexMatrix[0][_vertexNumber+3] = min_x;
+    _vertexMatrix[1][_vertexNumber+3] = max_y;
+    _vertexMatrix[2][_vertexNumber+3] = min_z;
+
+    // E min_x, min_y, max_z
+    _vertexMatrix[0][_vertexNumber+4] = min_x;
+    _vertexMatrix[1][_vertexNumber+4] = min_y;
+    _vertexMatrix[2][_vertexNumber+4] = max_z;
+
+    // F max_x, min_y, max_z
+    _vertexMatrix[0][_vertexNumber+5] = max_x;
+    _vertexMatrix[1][_vertexNumber+5] = min_y;
+    _vertexMatrix[2][_vertexNumber+5] = max_z;
+
+    // G max_x, max_y, max_z
+    _vertexMatrix[0][_vertexNumber+6] = max_x;
+    _vertexMatrix[1][_vertexNumber+6] = max_y;
+    _vertexMatrix[2][_vertexNumber+6] = max_z;
+
+    // H min_x, max_y, max_z
+    _vertexMatrix[0][_vertexNumber+7] = min_x;
+    _vertexMatrix[1][_vertexNumber+7] = max_y;
+    _vertexMatrix[2][_vertexNumber+7] = max_z;
+
+    // 利用bounding box做正規化
+    for (int i=0; i<_vertexNumber + 8; i++)
+    {
+        _vertexMatrix[0][i] = ((_vertexMatrix[0][i]-min_x)/(max_x-min_x) * 2) - 1;
+        _vertexMatrix[1][i] = ((_vertexMatrix[1][i]-min_y)/(max_y-min_y) * 2) - 1;
+        _vertexMatrix[2][i] = ((_vertexMatrix[2][i]-min_z)/(max_z-min_z) * 2) - 1;
+    }
 }
 
 void Object::draw()
@@ -106,86 +157,125 @@ void Object::draw()
             // Bounding Box
             if (_boundingBox == true)
             {
-                float * dis = updateBoundingBox();
-                float max_x = dis[3]; float min_x = dis[4]; 
-                float max_y = dis[5]; float min_y = dis[6]; 
-                float max_z = dis[7]; float min_z = dis[8]; 
-
-                // draw bounding box
-
-                // A min_x, min_y, min_z
-                // B max_x, min_y, min_z
-                // C max_x, max_y, min_z
-                // D min_x, max_y, min_z
+                // A min_x, min_y, min_z; 0
+                // B max_x, min_y, min_z; 1
+                // C max_x, max_y, min_z; 2
+                // D min_x, max_y, min_z; 3
 
                 glBegin(GL_LINES);
-                    glVertex3f(min_x, min_y, min_z); // A
-                    glVertex3f(max_x, min_y, min_z); // B
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+0],
+                               _vertexMatrix[1][_vertexNumber+0],
+                               _vertexMatrix[2][_vertexNumber+0]); // A
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+1],
+                               _vertexMatrix[1][_vertexNumber+1],
+                               _vertexMatrix[2][_vertexNumber+1]); // B
                 glEnd();
 
                 glBegin(GL_LINES);
-                    glVertex3f(max_x, min_y, min_z); // B
-                    glVertex3f(max_x, max_y, min_z); // C
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+1], 
+                               _vertexMatrix[1][_vertexNumber+1], 
+                               _vertexMatrix[2][_vertexNumber+1]); // B
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+2],
+                               _vertexMatrix[1][_vertexNumber+2], 
+                               _vertexMatrix[2][_vertexNumber+2]); // C
                 glEnd();
 
                 glBegin(GL_LINES);
-                    glVertex3f(max_x, max_y, min_z); // C
-                    glVertex3f(min_x, max_y, min_z); // D
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+2],
+                               _vertexMatrix[1][_vertexNumber+2], 
+                               _vertexMatrix[2][_vertexNumber+2]); // C
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+3],
+                               _vertexMatrix[1][_vertexNumber+3], 
+                               _vertexMatrix[2][_vertexNumber+3]); // D
                 glEnd();
 
                 glBegin(GL_LINES);
-                    glVertex3f(min_x, max_y, min_z); // D
-                    glVertex3f(min_x, min_y, min_z); // A
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+3],
+                               _vertexMatrix[1][_vertexNumber+3], 
+                               _vertexMatrix[2][_vertexNumber+3]); // D
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+0], 
+                               _vertexMatrix[1][_vertexNumber+0],
+                               _vertexMatrix[2][_vertexNumber+0]); // A
                 glEnd();
 
-                // E min_x, min_y, max_z
-                // F max_x, min_y, max_z
-                // G max_x, max_y, max_z
-                // H min_x, max_y, max_z
+                // E min_x, min_y, max_z; 4
+                // F max_x, min_y, max_z; 5
+                // G max_x, max_y, max_z; 6
+                // H min_x, max_y, max_z; 7
 
                 glBegin(GL_LINES);
-                    glVertex3f(min_x, min_y, max_z); // E
-                    glVertex3f(max_x, min_y, max_z); // F
-                glEnd();
-
-                glBegin(GL_LINES);
-                    glVertex3f(max_x, min_y, max_z); // F
-                    glVertex3f(max_x, max_y, max_z); // G
-                glEnd();
-
-                glBegin(GL_LINES);
-                    glVertex3f(max_x, max_y, max_z); // G
-                    glVertex3f(min_x, max_y, max_z); // H
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+4], 
+                               _vertexMatrix[1][_vertexNumber+4],
+                               _vertexMatrix[2][_vertexNumber+4]); // E
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+5], 
+                               _vertexMatrix[1][_vertexNumber+5],
+                               _vertexMatrix[2][_vertexNumber+5]); // F
                 glEnd();
 
                 glBegin(GL_LINES);
-                    glVertex3f(min_x, max_y, max_z); // H
-                    glVertex3f(min_x, min_y, max_z); // E
-                glEnd();
-
-                // --------------------------------------
-
-                glBegin(GL_LINES);
-                    glVertex3f(min_x, min_y, min_z); // A
-                    glVertex3f(min_x, min_y, max_z); // E
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+5], 
+                               _vertexMatrix[1][_vertexNumber+5],
+                               _vertexMatrix[2][_vertexNumber+5]); // F
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+6], 
+                               _vertexMatrix[1][_vertexNumber+6],
+                               _vertexMatrix[2][_vertexNumber+6]); // G
                 glEnd();
 
                 glBegin(GL_LINES);
-                    glVertex3f(max_x, min_y, min_z); // B
-                    glVertex3f(max_x, min_y, max_z); // F
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+6], 
+                               _vertexMatrix[1][_vertexNumber+6],
+                               _vertexMatrix[2][_vertexNumber+6]); // G
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+7], 
+                               _vertexMatrix[1][_vertexNumber+7],
+                               _vertexMatrix[2][_vertexNumber+7]); // H
                 glEnd();
 
                 glBegin(GL_LINES);
-                    glVertex3f(max_x, max_y, min_z); // C
-                    glVertex3f(max_x, max_y, max_z); // G
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+7], 
+                               _vertexMatrix[1][_vertexNumber+7],
+                               _vertexMatrix[2][_vertexNumber+7]); // H
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+4], 
+                               _vertexMatrix[1][_vertexNumber+4],
+                               _vertexMatrix[2][_vertexNumber+4]); // E
+                glEnd();
+
+                // ----------------------------------------------------
+
+                glBegin(GL_LINES);
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+0], 
+                               _vertexMatrix[1][_vertexNumber+0],
+                               _vertexMatrix[2][_vertexNumber+0]); // A
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+4], 
+                               _vertexMatrix[1][_vertexNumber+4],
+                               _vertexMatrix[2][_vertexNumber+4]); // E
                 glEnd();
 
                 glBegin(GL_LINES);
-                    glVertex3f(min_x, max_y, min_z); // D
-                    glVertex3f(min_x, max_y, max_z); // H
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+1], 
+                               _vertexMatrix[1][_vertexNumber+1], 
+                               _vertexMatrix[2][_vertexNumber+1]); // B
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+5], 
+                               _vertexMatrix[1][_vertexNumber+5],
+                               _vertexMatrix[2][_vertexNumber+5]); // F
                 glEnd();
 
-                delete dis;
+                glBegin(GL_LINES);
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+2],
+                               _vertexMatrix[1][_vertexNumber+2], 
+                               _vertexMatrix[2][_vertexNumber+2]); // C
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+6], 
+                               _vertexMatrix[1][_vertexNumber+6],
+                               _vertexMatrix[2][_vertexNumber+6]); // G
+                glEnd();
+
+                glBegin(GL_LINES);
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+3],
+                               _vertexMatrix[1][_vertexNumber+3], 
+                               _vertexMatrix[2][_vertexNumber+3]); // D
+                    glVertex3f(_vertexMatrix[0][_vertexNumber+7], 
+                               _vertexMatrix[1][_vertexNumber+7],
+                               _vertexMatrix[2][_vertexNumber+7]); // H
+                glEnd();
             }
         }
     }
@@ -195,9 +285,9 @@ void Object::draw()
 
 void Object::translate(float x, float y, float z)
 {
-    float translateMatrix[4][_vertexNumber];
+    float translateMatrix[4][_vertexNumber + 8];
 
-    for (int j=0; j<_vertexNumber; j++)
+    for (int j=0; j<_vertexNumber + 8; j++)
     {
         translateMatrix[0][j] = x;
         translateMatrix[1][j] = y;
@@ -206,7 +296,7 @@ void Object::translate(float x, float y, float z)
         translateMatrix[3][j] = 0;
     }
 
-    int N = 4; int M = _vertexNumber;
+    int N = 4; int M = _vertexNumber + 8;
 
     for (int i=0; i<N ; i++)
     {
@@ -244,7 +334,7 @@ void Object::rotation(float x, float y, float z, float angle)
 void Object::scale(float sizex, float sizey, float sizez)
 {
     float scaleMatrix[4][4] = {{sizex,  0.0f,  0.0f, 0.0f}, 
-                               { 0.0f, sizey,  0.0f, 0.0f},
+                               { 0.0f, sizey,  0.0f, 0.0f}, 
                                { 0.0f,  0.0f, sizez, 0.0f},
                                { 0.0f,  0.0f,  0.0f, 1.0f}};
 
@@ -376,7 +466,7 @@ void Object::parseFile(string filepath)
 
 void Object::matrixMultiplication(float (& a)[4][4])
 {
-    int N = 4; int M = 4; int R = _vertexNumber;
+    int N = 4; int M = 4; int R = _vertexNumber + 8;
 
     for (int i=0; i<N ; i++)
     {
@@ -395,50 +485,10 @@ void Object::assignAnswer()
 {
     for (int i=0; i<4; i++)
     {
-        for (int j=0; j<_vertexNumber; j++)
+        for (int j=0; j<_vertexNumber + 8; j++)
         {
             _vertexMatrix[i][j] = _answerMatrix[i][j];
         }
     }
 }
 
-float * Object::updateBoundingBox()
-{
-    float max_x = _vertexMatrix[0][0]; float min_x = _vertexMatrix[0][0];
-    float max_y = _vertexMatrix[1][0]; float min_y = _vertexMatrix[1][0];
-    float max_z = _vertexMatrix[2][0]; float min_z = _vertexMatrix[2][0];
-
-    // 依照vertex數量多寡犧牲準確度，提昇效率
-    int step;
-    if (_vertexNumber >= 3000) step = 6;
-    else if (_vertexNumber >= 2500) step = 5;
-    else if (_vertexNumber >= 2000) step = 4;
-    else if (_vertexNumber >= 1500) step = 3;
-    else if (_vertexNumber >= 1000) step = 2;
-    else step = 1;
-
-    for (int i=0; i<_vertexNumber; i+=step)
-    {
-        // max
-        if (_vertexMatrix[0][i]>max_x) max_x=_vertexMatrix[0][i];
-        if (_vertexMatrix[1][i]>max_y) max_y=_vertexMatrix[1][i];
-        if (_vertexMatrix[2][i]>max_z) max_z=_vertexMatrix[2][i];
-
-        // min
-        if (_vertexMatrix[0][i]<min_x) min_x=_vertexMatrix[0][i];
-        if (_vertexMatrix[1][i]<min_y) min_y=_vertexMatrix[1][i];
-        if (_vertexMatrix[2][i]<min_z) min_z=_vertexMatrix[2][i];
-    }
-
-    float dis_x = max_x - min_x;
-    float dis_y = max_y - min_y;
-    float dis_z = max_z - min_z;
-
-    float *a = new float[9];
-    a[0] = dis_x; a[1] = dis_y; a[2] = dis_z;
-    a[3] = max_x; a[4] = min_x; 
-    a[5] = max_y; a[6] = min_y; 
-    a[7] = max_z; a[8] = min_z;
-    
-    return a;
-}
