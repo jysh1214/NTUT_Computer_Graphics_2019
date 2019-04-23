@@ -27,7 +27,6 @@ private:
     void parseFile(string filepath);
     void matrixMultiplication(float (& a)[4][4]);
     void assignAnswer();
-    float *updateBoundingBox();
 
     int _vertexNumber; int _faceNumber;
 
