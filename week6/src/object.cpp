@@ -26,6 +26,13 @@ Object::Object(string filepath, string renderMode, string colorMode, bool boundi
 
     parseFile(filepath);
 
+    /* 
+       紀錄完vertex之後，後面八個再紀錄 max_x, min_x, max_y, min_y, max_z, min_z
+       所組成的八個點(Bounding Box)
+    */
+    _vertexMatrix = (float*) new float[4*(_vertexNumber+8)];
+    _answerMatrix = (float*) new float[4*(_vertexNumber+8)];
+
     for (int i=0; i<_vertexNumber; i++)
     {
         _vertexMatrix[0 + i*4] = _vertex[i].x;
@@ -373,7 +380,6 @@ void Object::parseFile(string filepath)
     int p = 0;
 
     bool function_check = false;
-    bool begin = false;
 
     for (string::size_type i = 0; i < myFile.size(); ++i)
     {
@@ -382,7 +388,7 @@ void Object::parseFile(string filepath)
             function += "v";
         }
         
-        else if (myFile[i] == 'f' && begin)
+        else if (myFile[i] == 'f')
         {
             function += "f";
         }
@@ -406,7 +412,6 @@ void Object::parseFile(string filepath)
             {
                 function = "vertex";
                 function_check = true;
-                begin = true; // read first v
             }
             else if (function == "f " && myFile[i-1] == 'f')
             {
@@ -455,11 +460,6 @@ void Object::parseFile(string filepath)
             function = "";
             p = i + 1;
         }
-
-        else
-        {
-
-        }
     }
     myfile.close();
 }
@@ -491,4 +491,3 @@ void Object::assignAnswer()
         }
     }
 }
-
