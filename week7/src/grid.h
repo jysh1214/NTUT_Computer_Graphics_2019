@@ -209,7 +209,7 @@ public:
                 }
 
                 if (abs(iter_y-y1) < _step) break;
-                this->addSqr(iter_x, iter_y, 1);
+                if (!anti_aliasing) this->addSqr(iter_x, iter_y, 1);
             }
         }
     }
