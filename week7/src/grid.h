@@ -117,8 +117,8 @@ public:
         else if (x1 <= x0 && y0 < y1) // 左上 & y
         {
             x_iter_step = -_step; y_iter_step = _step;
-            if (slope < 1) {aa_y_iter_step = _step * slope;}
-            if (slope >= 1) {aa_x_iter_step = -_step * dx/dy;}
+            if (slope <= 1) {aa_y_iter_step = _step * slope;}
+            if (slope > 1) {aa_x_iter_step = -_step * dx/dy;}
         }
         else if (x0 <= x1 && y1 < y0) // 右下 & -y
         {
@@ -130,8 +130,8 @@ public:
         else if (x1 < x0 && y1 <= y0) // 左下 & -x
         {
             x_iter_step = -_step; y_iter_step = -_step;
-            if (slope < 1) {aa_y_iter_step = -_step * slope;}
-            if (slope >= 1) {aa_x_iter_step = -_step * dx/dy;}
+            if (slope <= 1) {aa_y_iter_step = -_step * slope;}
+            if (slope > 1) {aa_x_iter_step = -_step * dx/dy;}
         }
 
         if (slope <= 1)
@@ -148,10 +148,11 @@ public:
                 {
                     d += delNE; iter_x += x_iter_step; iter_y += y_iter_step;
                 }
-                line_pos += aa_y_iter_step;
 
                 if (anti_aliasing)
                 {
+                    line_pos += aa_y_iter_step;
+
                     /* 判斷線穿過格子上半部或下半部 */
                     if (line_pos >= iter_y) // 上半部
                     {
@@ -168,7 +169,7 @@ public:
                             this->addSqr(iter_x, iter_y, a);
                     }
                 }
-
+                
                 if (abs(iter_x-x1) < _step) break;
                 if (!anti_aliasing) this->addSqr(iter_x, iter_y, 1);
             }
@@ -187,10 +188,11 @@ public:
                 {
                     d += delNE; iter_x += x_iter_step; iter_y += y_iter_step;
                 }
-                line_pos += aa_x_iter_step;
 
                 if (anti_aliasing)
                 {
+                    line_pos += aa_x_iter_step;
+
                     /* 判斷線穿過格子右半部或左半部 */
                     if (line_pos >= iter_x) // 右半部
                     {
@@ -238,8 +240,8 @@ public:
         }
         else if (x1 <= x0 && y0 < y1) // 左上 & y
         {
-            if (slope < 1) {x_iter_step = -_step; y_iter_step = _step * slope;}
-            if (slope >= 1) {x_iter_step = -_step * dx/dy; y_iter_step = _step;}
+            if (slope <= 1) {x_iter_step = -_step; y_iter_step = _step * slope;}
+            if (slope > 1) {x_iter_step = -_step * dx/dy; y_iter_step = _step;}
         }
         else if (x0 <= x1 && y1 < y0) // 右下 & -y
         {
@@ -248,65 +250,46 @@ public:
         }
         else if (x1 < x0 && y1 <= y0) // 左下 & -x
         {
-            if (slope < 1) {x_iter_step = -_step; y_iter_step = -_step * slope;}
-            if (slope >= 1) {x_iter_step = -_step * dx/dy; y_iter_step = -_step;}
+            if (slope <= 1) {x_iter_step = -_step; y_iter_step = -_step * slope;}
+            if (slope > 1) {x_iter_step = -_step * dx/dy; y_iter_step = -_step;}
         }
 
-        if (slope == 0)
+        if (slope <= 1)
         {
             while (abs(iter_x-x1) >= _step)
             {
-                this->addSqr(iter_x, iter_y, 1);
-                iter_x += x_iter_step;
-            }
-        }
-        else if (slope == _size)
-        {
-            while (abs(iter_y-y1) >= _step)
-            {
-                this->addSqr(iter_x, iter_y, 1);
-                iter_y += y_iter_step;
+                /*  判斷線在格子上半部或下半部：
+                    上半部 取 本身 和 上面那格
+                    下半部 取 下方那格 和 本身
+                */
+                unsigned int sqr_number = (iter_y-_step/2)/_step;
+                float center = _step*sqr_number + _step/2;
+                float a = iter_y - center; a /= _step;
+
+                this->addSqr(iter_x, iter_y - _step/2, 1 - a);
+                if (iter_x != x1) 
+                    this->addSqr(iter_x, iter_y + _step/2, a);
+                iter_x += x_iter_step; iter_y += y_iter_step; 
             }
         }
         else
         {
-            if (slope <= 1)
+            while (abs(iter_y-y1) >= _step)
             {
-                while (abs(iter_x-x1) >= _step)
-                {
-                    /*  判斷線在格子上半部或下半部：
-                        上半部 取 本身 和 上面那格
-                        下半部 取 下方那格 和 本身
-                    */
-                    unsigned int sqr_number = (iter_y-_step/2)/_step;
-                    float center = _step*sqr_number + _step/2;
-                    float a = iter_y - center; a /= _step;
+                /*  判斷線在格子右半部或左半部：
+                    右半部 取 本身 和 右邊那格
+                    左半部 取 左邊那格 和 本身
+                */
+                unsigned int sqr_number = (iter_x-_step/2)/_step;
+                float center = _step*sqr_number + _step/2;
+                float a = iter_x - center; a /= _step;
 
-                    this->addSqr(iter_x, iter_y - _step/2, 1 - a);
-                    if (iter_x != x1) 
-                        this->addSqr(iter_x, iter_y + _step/2, a);
-                    iter_x += x_iter_step; iter_y += y_iter_step; 
-                }
+                this->addSqr(iter_x - _step/2, iter_y, 1 - a);
+                if (iter_y != y1) 
+                    this->addSqr(iter_x + _step/2, iter_y, a);
+                iter_x += x_iter_step; iter_y += y_iter_step; 
             }
-            else
-            {
-                while (abs(iter_y-y1) >= _step)
-                {
-                    /*  判斷線在格子右半部或左半部：
-                        右半部 取 本身 和 右邊那格
-                        左半部 取 左邊那格 和 本身
-                    */
-                    unsigned int sqr_number = (iter_x-_step/2)/_step;
-                    float center = _step*sqr_number + _step/2;
-                    float a = iter_x - center; a /= _step;
-
-                    this->addSqr(iter_x - _step/2, iter_y, 1 - a);
-                    if (iter_y != y1) 
-                        this->addSqr(iter_x + _step/2, iter_y, a);
-                    iter_x += x_iter_step; iter_y += y_iter_step; 
-                }
-            }   
-        }
+        }   
     }
 
 private:
