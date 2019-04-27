@@ -3,14 +3,12 @@
 #include <stdlib.h> 
 #include <vector>
 
-//#include "./GL/freeglut.h"
-
 #include "grid.h"
+#include "point.h"
 
 /*
 編譯：
 make
-
 使用說明：
 右鍵選單選取size，algo
 */
@@ -31,11 +29,6 @@ string ALGO = "mid_point";
 
 Grid *objectPointer = nullptr;
 
-struct point
-{
-    float x; float y;
-};
-
 point * Start = nullptr; point * End = nullptr;
 
 void RenderScence()
@@ -55,9 +48,11 @@ void RenderScence()
     if (End != nullptr)
     {
         if (ALGO == "mid_point")
-            objectPointer->midPoint(Start->x, 500-Start->y, End->x, 500-End->y);
+            objectPointer->midPoint(Start->x, 500-Start->y, End->x, 500-End->y, 0);
         if (ALGO == "anti_aliasing")
             objectPointer->antiAliasing(Start->x, 500-Start->y, End->x, 500-End->y);
+        if (ALGO == "mid_point_with_anti_aliasing")
+            objectPointer->midPoint(Start->x, 500-Start->y, End->x, 500-End->y, 1);
 
         Start = nullptr; End = nullptr;
     }
@@ -75,6 +70,9 @@ void init(void)
     glFrustum(-1, 1, -1, 1, 1, 1000);
     gluPerspective(10.0, 1.0, 1.0, 1.0);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void menuSelect(int option) {}
@@ -134,6 +132,9 @@ void algoSubMenuSelect(int option)
             ALGO = "anti_aliasing";
             break;
 
+        case 2:
+            ALGO = "mid_point_with_anti_aliasing";
+
         default:
             break;
     }
@@ -155,6 +156,7 @@ void buildPopupMenu()
     algoSubMenu = glutCreateMenu(algoSubMenuSelect);
     glutAddMenuEntry("mid_point", 0);
     glutAddMenuEntry("anti_aliasing", 1);
+    glutAddMenuEntry("mid_point_with_anti_aliasing", 2);
 
     // main menu
     glutCreateMenu(menuSelect);
@@ -194,4 +196,3 @@ int main(int argc, char** argv)
 
     return 0;
 }
-
