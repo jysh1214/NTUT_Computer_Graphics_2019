@@ -26,9 +26,7 @@ float Z_DIS = 5.0;
 int SIZE;
 
 string ALGO = "mid_point";
-
 Grid *objectPointer = nullptr;
-
 point * Start = nullptr; point * End = nullptr;
 
 void RenderScence()
@@ -54,6 +52,7 @@ void RenderScence()
         if (ALGO == "mid_point_with_anti_aliasing")
             objectPointer->midPoint(Start->x, 500-Start->y, End->x, 500-End->y, 1);
 
+        free(Start); free(End);
         Start = nullptr; End = nullptr;
     }
     
