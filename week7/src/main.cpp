@@ -82,6 +82,7 @@ void sizeSubMenuSelect(int option)
     {
         case 0:
         {
+            free(objectPointer);
             Grid * o = new Grid(WINDOW_SIZE_WIDTH, WINDOW_SIZE_HIGH, 9);
             SIZE = 9;
             objectPointer = o;
@@ -89,6 +90,7 @@ void sizeSubMenuSelect(int option)
         }
         case 1:
         {
+            free(objectPointer);
             Grid * o = new Grid(WINDOW_SIZE_WIDTH, WINDOW_SIZE_HIGH, 25);
             SIZE = 25;
             objectPointer = o;
@@ -96,6 +98,7 @@ void sizeSubMenuSelect(int option)
         }
         case 2:
         {
+            free(objectPointer);
             Grid * o = new Grid(WINDOW_SIZE_WIDTH, WINDOW_SIZE_HIGH, 85);
             SIZE = 85;
             objectPointer = o;
@@ -107,6 +110,7 @@ void sizeSubMenuSelect(int option)
             cout << "Input size: ";
             cin >> temp;
             SIZE = temp;
+            free(objectPointer);
             Grid * o = new Grid(WINDOW_SIZE_WIDTH, WINDOW_SIZE_HIGH, temp);
             objectPointer = o;
             break;
