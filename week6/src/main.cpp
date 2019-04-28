@@ -106,6 +106,7 @@ void fileSubMenuSelect(int option)
     {
         case 0:
         {
+            free(objectPointer);
             Object *o = new Object("gourd.obj", RenderMode, ColorMode, BoundingBox);
             objectPointer = o;
             FilePath = "gourd.obj";
@@ -113,6 +114,7 @@ void fileSubMenuSelect(int option)
         }
         case 1:
         {
+            free(objectPointer);
             Object *o = new Object("lamp.obj", RenderMode, ColorMode, BoundingBox);
             objectPointer = o;
             FilePath = "lamp.obj";
@@ -120,6 +122,7 @@ void fileSubMenuSelect(int option)
         }
         case 2:
         {
+            free(objectPointer);
             Object *o = new Object("octahedron.obj", RenderMode, ColorMode, BoundingBox);
             objectPointer = o;
             FilePath = "octahedron.obj";
@@ -127,6 +130,7 @@ void fileSubMenuSelect(int option)
         }
         case 3:
         {            
+            free(objectPointer);
             Object *o = new Object("teapot.obj", RenderMode, ColorMode, BoundingBox);
             objectPointer = o;
             FilePath = "teapot.obj";
@@ -134,6 +138,7 @@ void fileSubMenuSelect(int option)
         }
         case 4:
         {
+            free(objectPointer);
             Object *o = new Object("teddy.obj", RenderMode, ColorMode, BoundingBox);
             objectPointer = o;
             FilePath = "teddy.obj";
@@ -141,6 +146,7 @@ void fileSubMenuSelect(int option)
         }
         case 5:
         {
+            free(objectPointer);
             cout << "Enter file path: ";
             cin >> FilePath;
             Object *o = new Object(FilePath, RenderMode, ColorMode, BoundingBox);
@@ -252,8 +258,7 @@ void buildPopupMenu()
     glutAddMenuEntry("Random", 3);
 
     // main menu
-    int menu_id;
-    menu_id = glutCreateMenu(menuSelect);
+    glutCreateMenu(menuSelect);
     glutAddSubMenu("File", fileSubMenu);
     glutAddSubMenu("Render Mode", renderModeSubMenu);
     glutAddSubMenu("Color Mode", colorModeSubMenu);
