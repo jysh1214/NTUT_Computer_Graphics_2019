@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include <math.h>
+#include <exception> 
 
 #include "object.h"
 
@@ -27,11 +28,18 @@ Object::Object(string filepath, string renderMode, string colorMode, bool boundi
     parseFile(filepath);
 
     /* 
-       紀錄完vertex之後，後面八個再紀錄 max_x, min_x, max_y, min_y, max_z, min_z
-       所組成的八個點(Bounding Box)
+    * 紀錄完vertex之後，後面八個再紀錄 max_x, min_x, max_y, min_y, max_z, min_z
+    * 所組成的八個點(Bounding Box)
     */
-    _vertexMatrix = (float*) new float[4*(_vertexNumber+8)];
-    _answerMatrix = (float*) new float[4*(_vertexNumber+8)];
+    try
+    {
+        _vertexMatrix = (float*) new float[4*(_vertexNumber+8)];
+        _answerMatrix = (float*) new float[4*(_vertexNumber+8)];
+    }
+    catch (const exception& e)
+    {
+        cerr << "exception caught: " << e.what() << '\n';
+    }
 
     for (int i=0; i<_vertexNumber; i++)
     {
@@ -292,8 +300,16 @@ void Object::draw()
 
 void Object::translate(float x, float y, float z)
 {
-    float *translateMatrix = (float*) new float[4 * (_vertexNumber + 8)];
-
+    float * translateMatrix;
+    try
+    {
+        translateMatrix = (float*) new float[4 * (_vertexNumber + 8)];
+    }
+    catch(const exception& e)
+    {
+        cerr << "exception caught: " << e.what() << '\n';
+    }
+    
     for (int j=0; j<_vertexNumber + 8; j++)
     {
         translateMatrix[0 + j*4] = x;
@@ -367,10 +383,17 @@ void Object::setBoundingBox(bool boundingBox)
 void Object::parseFile(string filepath)
 {
     ifstream myfile;
-    myfile.open(filepath);
 
-    //read the file as pure string
-    stringstream strStream;
+    try
+    {
+        myfile.open(filepath);
+    }
+    catch(const exception& e)
+    {
+        cerr << "exception caught: " << e.what() << '\n';
+    }
+    
+    stringstream strStream;          //read the file as pure string
     strStream << myfile.rdbuf();     //read the file
     string myFile = strStream.str(); //str holds the content of the file
 
@@ -491,3 +514,4 @@ void Object::assignAnswer()
         }
     }
 }
+

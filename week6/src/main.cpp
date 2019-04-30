@@ -2,15 +2,12 @@
 #include <iostream>
 #include <stdlib.h> 
 
-//#include "./GL/freeglut.h"
-
 #include "object.h"
 #include "dot.h"
 
 /*
 編譯：
 make
-
 使用說明：
 滑鼠任一點取為建立自訂軸
 方向健上下左右移動選取方塊
@@ -107,7 +104,15 @@ void fileSubMenuSelect(int option)
         case 0:
         {
             free(objectPointer);
-            Object *o = new Object("gourd.obj", RenderMode, ColorMode, BoundingBox);
+            Object * o;
+            try
+            {
+                o = new Object("gourd.obj", RenderMode, ColorMode, BoundingBox);
+            }
+            catch (const exception& e)
+            {
+                cerr << "exception caught: " << e.what() << '\n';
+            }
             objectPointer = o;
             FilePath = "gourd.obj";
             break;
@@ -115,7 +120,15 @@ void fileSubMenuSelect(int option)
         case 1:
         {
             free(objectPointer);
-            Object *o = new Object("lamp.obj", RenderMode, ColorMode, BoundingBox);
+            Object * o;
+            try
+            {
+                o = new Object("lamp.obj", RenderMode, ColorMode, BoundingBox);
+            }
+            catch (const exception& e)
+            {
+                cerr << "exception caught: " << e.what() << '\n';
+            }
             objectPointer = o;
             FilePath = "lamp.obj";
             break;
@@ -123,15 +136,31 @@ void fileSubMenuSelect(int option)
         case 2:
         {
             free(objectPointer);
-            Object *o = new Object("octahedron.obj", RenderMode, ColorMode, BoundingBox);
+            Object * o;
+            try
+            {
+                o = new Object("octahedron.obj", RenderMode, ColorMode, BoundingBox);
+            }
+            catch (const exception& e)
+            {
+                cerr << "exception caught: " << e.what() << '\n';
+            }
             objectPointer = o;
             FilePath = "octahedron.obj";
             break;
         }
         case 3:
-        {            
-            free(objectPointer);
-            Object *o = new Object("teapot.obj", RenderMode, ColorMode, BoundingBox);
+        {           
+            free(objectPointer); 
+            Object * o;
+            try
+            {
+                o = new Object("teapot.obj", RenderMode, ColorMode, BoundingBox);
+            }
+            catch (const exception& e)
+            {
+                cerr << "exception caught: " << e.what() << '\n';
+            }
             objectPointer = o;
             FilePath = "teapot.obj";
             break;
@@ -139,7 +168,15 @@ void fileSubMenuSelect(int option)
         case 4:
         {
             free(objectPointer);
-            Object *o = new Object("teddy.obj", RenderMode, ColorMode, BoundingBox);
+            Object * o;
+            try
+            {
+                o = new Object("teddy.obj", RenderMode, ColorMode, BoundingBox);
+            }
+            catch (const exception& e)
+            {
+                cerr << "exception caught: " << e.what() << '\n';
+            }
             objectPointer = o;
             FilePath = "teddy.obj";
             break;
@@ -149,7 +186,15 @@ void fileSubMenuSelect(int option)
             free(objectPointer);
             cout << "Enter file path: ";
             cin >> FilePath;
-            Object *o = new Object(FilePath, RenderMode, ColorMode, BoundingBox);
+            Object * o;
+            try
+            {
+                o = new Object(FilePath, RenderMode, ColorMode, BoundingBox);
+            }
+            catch (const exception& e)
+            {
+                cerr << "exception caught: " << e.what() << '\n';
+            }
             objectPointer = o;
             break;
         }
@@ -375,4 +420,3 @@ int main(int argc, char** argv)
 
     return 0;
 }
-
