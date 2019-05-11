@@ -8,7 +8,6 @@
 /*
 編譯：
 make
-
 使用說明：
 滑鼠任一點取為建立自訂軸
 方向健上下左右移動選取方塊
@@ -16,6 +15,9 @@ make
 鍵盤小寫英文字母n對自訂軸旋轉
 鍵盤小寫英文字母p,o,i做scale
 */
+
+#define X .525731112119133606
+#define Z .850650808352039932
 
 using namespace std;
 
@@ -42,8 +44,8 @@ string ShadeModel = "Flat";
 // Object *objectPointer = nullptr;
 
 /* create lcosahedron */
-float X = 0.52;
-float Z = 0.85;
+// float X = 0.52;
+// float Z = 0.85;
 vector<Vertex> vdata1 {
     {-X, 0.0, Z}, {X, 0.0, Z}, {-X, 0.0, -Z}, {X, 0.0, -Z},
     {0.0, Z, X}, {0.0, Z, -X}, {0.0, -Z, X}, {0.0, -Z, -X},
@@ -67,17 +69,17 @@ void RenderScence(void)
 
     glViewport(0, 0, 500, 500);
     glLoadIdentity();
-    gluLookAt(0, 0, 4.0f, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 0, 3.0f, 0, 0, 0, 0, 1, 0);
     object1.draw();
 
     glViewport(500, 0, 500, 500);
     glLoadIdentity();
-    gluLookAt(0, 0, 4.0f, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 0, 3.0f, 0, 0, 0, 0, 1, 0);
     object2.draw();
 
     glViewport(1000, 0, 500, 500);
     glLoadIdentity();
-    gluLookAt(0, 0, 4.0f, 0, 0, 0, 0, 1, 0);
+    gluLookAt(0, 0, 3.0f, 0, 0, 0, 0, 1, 0);
     object3.draw();
     
     glFlush();
@@ -303,4 +305,3 @@ int main(int argc, char** argv)
 
     return 0;
 }
-
